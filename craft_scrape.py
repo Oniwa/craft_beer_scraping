@@ -51,15 +51,15 @@ beers_list = get_all_beers(html_soup)
 
 # Create Pandas Dataframe from beerlist
 df = pd.DataFrame(beers_list)
-print(df.head(5))
+df.head(5)
 
 # Create unique list of breweries
 breweries = df[["brewery_location", "brewery_name"]]
 breweries = breweries.drop_duplicates().reset_index(drop=True)
 breweries["id"] = breweries.index
-print(breweries.head(5))
+breweries.head(5)
 
-
+# Merge the beers data set with the breweries data set
 beers = df.merge(breweries,
                  left_on=["brewery_name", "brewery_location"],
                  right_on=["brewery_name", "brewery_location"],
@@ -71,4 +71,33 @@ beers_columns_rename = {
     "id_brewery": "brewery_id"
 }
 beers.rename(inplace=True, columns=beers_columns_rename)
+beers.head(5)
+
+# Split City and State into two seperate columns
+breweries["city"] = breweries["brewery_location"].apply(
+    lambda location: location.split(",")[0])
+breweries["state"] = breweries["brewery_location"].apply(
+    lambda location: location.split(",")[1])
+breweries = breweries[["brewery_name", "city", "state"]]
+breweries.rename(inplace=True, columns={"brewery_name": "name"})
+breweries.head(5)
+
+# Strips percent sign and returns floating number
+def string_pct_to_float(value):
+    stripped = str(value).strip("%")
+    try:
+        return float(stripped)/100
+    except ValueError:
+        return None
+
+beers["abv"] = beers["abv"].apply(string_pct_to_float)
+
+# Turns string to int
+def string_to_int(value):
+    try:
+        return int(value)
+    except ValueError:
+        return None
+
+beers["ibu"] = beers["ibu"].apply(string_to_int)
 print(beers.head(5))
