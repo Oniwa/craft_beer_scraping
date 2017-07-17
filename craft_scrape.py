@@ -43,9 +43,32 @@ def get_all_beers(html_soup):
     return beers
 
 
+# Scrape webpage and create beerlist
 html = urlopen("http://craftcans.com/db.php?search=all&sort=beerid&"
                "ord=desc&view=text")
 html_soup = BeautifulSoup(html, 'html.parser')
 beers_list = get_all_beers(html_soup)
 
-print('done')
+# Create Pandas Dataframe from beerlist
+df = pd.DataFrame(beers_list)
+print(df.head(5))
+
+# Create unique list of breweries
+breweries = df[["brewery_location", "brewery_name"]]
+breweries = breweries.drop_duplicates().reset_index(drop=True)
+breweries["id"] = breweries.index
+print(breweries.head(5))
+
+
+beers = df.merge(breweries,
+                 left_on=["brewery_name", "brewery_location"],
+                 right_on=["brewery_name", "brewery_location"],
+                 sort=True,
+                 suffixes=('_beer', '_brewery'))
+beers = beers[["abv", "ibu", "id_beer", "name", "size", "style", "id_brewery"]]
+beers_columns_rename = {
+    "id_beer": "id",
+    "id_brewery": "brewery_id"
+}
+beers.rename(inplace=True, columns=beers_columns_rename)
+print(beers.head(5))
