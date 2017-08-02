@@ -117,3 +117,6 @@ def extract_ounces(value):
 beers["ounces"] = beers["size"].apply(extract_ounces)
 del beers["size"]
 print(beers.head(5))
+
+beers.to_csv("d:\\code\\craft_scraping\\data\\processed\\beers.csv")
+breweries.to_csv("d:\\code\\craft_scraping\\data\\processed\\breweries.csv")
