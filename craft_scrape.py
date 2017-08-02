@@ -78,7 +78,7 @@ breweries["city"] = breweries["brewery_location"].apply(
     lambda location: location.split(",")[0])
 breweries["state"] = breweries["brewery_location"].apply(
     lambda location: location.split(",")[1])
-breweries = breweries[["brewery_name", "city", "state"]]
+breweries = breweries[["brewery_name", "city", "state", "id"]]
 breweries.rename(inplace=True, columns={"brewery_name": "name"})
 breweries.head(5)
 
@@ -117,3 +117,6 @@ def extract_ounces(value):
 beers["ounces"] = beers["size"].apply(extract_ounces)
 del beers["size"]
 print(beers.head(5))
+
+beers.to_csv("d:\\code\\craft_scraping\\data\\processed\\beers.csv")
+breweries.to_csv("d:\\code\\craft_scraping\\data\\processed\\breweries.csv")
