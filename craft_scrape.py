@@ -82,6 +82,7 @@ breweries = breweries[["brewery_name", "city", "state"]]
 breweries.rename(inplace=True, columns={"brewery_name": "name"})
 breweries.head(5)
 
+
 # Strips percent sign and returns floating number
 def string_pct_to_float(value):
     stripped = str(value).strip("%")
@@ -92,6 +93,7 @@ def string_pct_to_float(value):
 
 beers["abv"] = beers["abv"].apply(string_pct_to_float)
 
+
 # Turns string to int
 def string_to_int(value):
     try:
@@ -100,4 +102,18 @@ def string_to_int(value):
         return None
 
 beers["ibu"] = beers["ibu"].apply(string_to_int)
+beers.head(5)
+
+
+# Find the number of ounces
+def extract_ounces(value):
+    stripped = value.strip("oz")
+    match = re.match("(\d{1,2}\.*\d*)", value)
+    if match:
+        return float(match.group(0))
+    else:
+        return None
+
+beers["ounces"] = beers["size"].apply(extract_ounces)
+del beers["size"]
 print(beers.head(5))
