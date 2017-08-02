@@ -78,7 +78,7 @@ breweries["city"] = breweries["brewery_location"].apply(
     lambda location: location.split(",")[0])
 breweries["state"] = breweries["brewery_location"].apply(
     lambda location: location.split(",")[1])
-breweries = breweries[["brewery_name", "city", "state"]]
+breweries = breweries[["brewery_name", "city", "state", "id"]]
 breweries.rename(inplace=True, columns={"brewery_name": "name"})
 breweries.head(5)
 
